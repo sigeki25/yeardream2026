@@ -5,11 +5,16 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "jest"
   },
   "dependencies": {
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
   }
 }
