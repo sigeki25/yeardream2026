@@ -1,3 +1,6 @@
+# 강사님 git
+https://github.com/iciaGit/yeardream2026
+
 # 1. 원하는 공유 저장소에 접근
 
 # 2. git 초기화
