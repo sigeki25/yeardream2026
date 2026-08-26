@@ -18,9 +18,6 @@ git commit -m "첫번째 커밋"
 # commit 의 상태 확인
 git log --graph --oneline --all
 
-# git 작업자 이름 변경
-git config --global user.name "name"
-
 # 이후 vs code 로 활용 가능
 
 # 원격저장소 등록
@@ -32,5 +29,8 @@ git branch -M main
 # push
 git push -u origin main
 
-# git 작업자 이름 변경
-git config --global user.name "name"
+# 글로벌 저장소 이름 변경
+git config --global user.name "새로운 사용자 이름"
+
+# 이메일 주소 변경
+git config --global user.email "your_email@example.com"
