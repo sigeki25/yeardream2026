@@ -30,5 +30,9 @@ app.post("/login", (req, res) => {
 });
 
 // 위 URL 외의 것이 왔을 때 처리
+app.use("/*path", (req, res) => {
+    res.send("잘못된 요청 입니다.");
+});
+
 
 app.listen(80, () => console.log("http://localhost"));
