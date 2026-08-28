@@ -37,10 +37,10 @@ router.get(["/list", "/"], async (req, res, next) => {
 });
 
 // 회원정보 상세보기(/member/get/:id)
-router.get("/get/:id", async(req, res, next) => {
+router.get("/get/:id", async (req, res, next) => {
     const {id} = req.params;
     // 찾는 내용이 하나일 경우(unique 속성이 있음) findOne({filter}) 사용
-    let member = await Member.findOne({id}).lean();
+    const member = await Member.findOne({id}).lean();
     if (member == null) {
         res.json({"success": false, "data": {"info": {}, "message": "없는 회원"}});
         return;
@@ -49,11 +49,28 @@ router.get("/get/:id", async(req, res, next) => {
     console.log(`/get/:${id}`, req.params);
 });
 // 회원정보 수정(/member/update/:id)
-router.put("/update/:id", (req, res, next) => {
+router.put("/update/:id", async (req, res, next) => {
     const {id} = req.params;
-    const body = req.body;
-    res.json({"success": true, "data": {"id": id, "body": body}});
-    console.log(`/update/:${id}`, req.params);
+    const {pw, name, phone} = req.body;
+    const update = {}; // const 는 배열이나 오브젝트 일부 수정을 허용
+    if (pw != undefined)
+        update.pw = pw;
+    if (name != undefined)
+        update.name = name;
+    if (phone != undefined)
+        update.phone = phone;
+    const member = await Member.findOneAndUpdate({id}, update, {
+        new: true, // 수정된 후의 문서를 보여준다.
+        runValidators: true // update 후의 스키마 검증을 수행한다.
+    }).lean();
+
+    if(member == null) {
+        res.json({"success":false, "message": "없는 회원"});
+        console.log(`/update/:${id}`, fail);
+        return;
+    }
+    res.json({"success": true, "message": "수정에 성공 하였습니다.", "data": member});
+    console.log(`/update/:${id}`, member);
 });
 
 // 회원정보 삭제(/member/delete/:id)
