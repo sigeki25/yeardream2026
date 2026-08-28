@@ -57,4 +57,4 @@ Content-Type: application/json
 }
 
 ### 5. 회원 삭제
-DELETE localhost/member/delete/user1
+DELETE localhost/member/delete/manager
