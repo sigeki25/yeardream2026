@@ -28,15 +28,24 @@ router.post("/join", async (req, res, next) => {
     }
 });
 // 회원 리스트(/member/list, /member/)
-router.get(["/list", "/"], (req, res, next) => {
-    res.json({"success": true, "data": []});
+router.get(["/list", "/"], async (req, res, next) => {
+    let list = await Member.find()
+        .sort({"createdAt": -1}) // 생성일 내림차순으로 정렬
+        .lean(); // 순수 JSON 으로 반환
+    res.json({"success": true, "data": list});
     console.log("/list");
 });
 
 // 회원정보 상세보기(/member/get/:id)
-router.get("/get/:id", (req, res, next) => {
+router.get("/get/:id", async(req, res, next) => {
     const {id} = req.params;
-    res.json({"success": true, "data": {"id": id, "msg": "상세보기 완료"}});
+    // 찾는 내용이 하나일 경우(unique 속성이 있음) findOne({filter}) 사용
+    let member = await Member.findOne({id}).lean();
+    if (member == null) {
+        res.json({"success": false, "data": {"info": {}, "message": "없는 회원"}});
+        return;
+    }
+    res.json({"success": true, "data": {"info": member, "message": "상세보기 완료"}});
     console.log(`/get/:${id}`, req.params);
 });
 // 회원정보 수정(/member/update/:id)
