@@ -9,6 +9,38 @@ Content-Type: application/json
   "phone": "010-1111-1111"
 }
 
+### 1-2. 회원 등록
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "user2",
+  "pw": "pass2",
+  "name": "usr2",
+  "phone": "010-2222-2222"
+}
+
+### 1=3. 회원 등록
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "admin",
+  "pw": "pass",
+  "name": "administrator",
+  "grade": "admin"
+}
+
+### 1=3. 회원 등록
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "manager",
+  "pw": "pass",
+  "name": "manager"
+}
+
 ### 2. 회원 목록
 GET http://localhost/member/list
 

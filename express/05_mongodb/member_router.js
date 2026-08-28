@@ -1,12 +1,31 @@
 const express = require("express");
-const {request} = require("express");
 const router = express.Router();
+const Member = require("./model");
 
 // 회원가입(/member/join)
-router.post("/join", (req, res, next) => {
+router.post("/join", async (req, res, next) => {
     const body = req.body;
-    res.json({"success": true, "msg": "회원가입 완료", "body": body});
-    console.log("/join", req.body);
+    const {id, pw, name, phone} = req.body;
+    try {
+        let result = await Member.create({id, pw, name, phone});
+        let object = result.toObject();
+        console.log("create user", id, pw, name, phone);
+        delete object.pw; // pw 는 경과값에서 제거
+        res.json({"success": true, "msg": "회원가입 완료", "data": object});
+        console.log("/join", req.body);
+    } catch (e) {
+        console.error(e, "code: " + e.code, "message: " + e.message)
+        let msg = "";
+        switch (e.code) {
+            case 11000:
+                msg = "이미 사용중인 아이디 입니다."
+                break;
+            default:
+                msg = ".0필수값을 확인해 주세요."
+                break;
+        }
+        res.json({"success": false, message: msg})
+    }
 });
 // 회원 리스트(/member/list, /member/)
 router.get(["/list", "/"], (req, res, next) => {

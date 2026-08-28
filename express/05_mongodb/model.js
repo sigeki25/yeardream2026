@@ -31,7 +31,7 @@ let schema = new mongoose.Schema({
         enum: ["user", "admin"],
     },
 }, {
-    collation: "member", // 적용할 컬렉션
+    collection: "member", // 적용할 컬렉션
     timestamps: true, // 특정 액션이 일어난 요일, 시간을 기록하는 기능
     // mongo db 는 기본적으로 _id 를 만든다.
     // mongoose 에서는 이 _id 를 id 로 기록한다.

@@ -8,7 +8,6 @@ function connectDB() {
 
     db.on("error", () => console.log("DB 접속 실패"));
     db.on("open", () => console.log("DB 접속 완료"));
-    return db;
 }
 
 module.exports = connectDB;

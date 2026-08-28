@@ -10,9 +10,9 @@ const connectDB = require("./db");
 app.use(cors());
 app.use(express.json()); // BODY 로 보내는 JSON 형태로 받기
 
-app.use("/member", require("./member_router"));
-
 connectDB();
+
+app.use("/member", require("./member_router"));
 
 app.all("/", (req, res) => {
     res.send("/member 를 이용해 join, list, get update, delete");
