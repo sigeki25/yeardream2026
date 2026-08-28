@@ -4,7 +4,8 @@ const router = express.Router();
 
 // 회원가입(/member/join)
 router.post("/join", (req, res, next) => {
-    res.json({"success": true, "msg": "회원가입 완료", "body": {...req.body}});
+    const body = req.body;
+    res.json({"success": true, "msg": "회원가입 완료", "body": body});
     console.log("/join", req.body);
 });
 // 회원 리스트(/member/list, /member/)
@@ -22,7 +23,8 @@ router.get("/get/:id", (req, res, next) => {
 // 회원정보 수정(/member/update/:id)
 router.put("/update/:id", (req, res, next) => {
     const {id} = req.params;
-    res.json({"success": true, "data": {"id": id, "msg": "수정 완료"}});
+    const body = req.body;
+    res.json({"success": true, "data": {"id": id, "body": body}});
     console.log(`/update/:${id}`, req.params);
 });
 
