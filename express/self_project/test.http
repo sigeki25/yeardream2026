@@ -1,0 +1,69 @@
+
+### 리스트 보기
+GET http://localhost/board/list/1
+
+### 리스트 보기(로그인)
+GET http://localhost/board/list/1
+Authorization: {{authToken}}
+
+### 상세보기
+GET http://localhost/board/detail/6a94e930a74c9452362301d1
+
+### 상세보기(로그인 하지 않은 상태로 로그인 해야 볼수 있는 개시물 보기)
+GET http://localhost/board/detail/6a94e968a74c9452362301d3
+
+### 상세보기(로그인 한 상태)
+GET http://localhost/board/detail/6a9507b9928e05197339bcff
+Authorization: {{authToken}}
+
+### 글쓰기
+POST http://localhost/board/new
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "title_d",
+  "body": "body_d"
+}
+
+### 글쓰기 (로그인 사용자만 보이게)
+POST http://localhost/board/new
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "title_login",
+  "body": "body_login",
+  "view_login_only": true
+}
+### 삭제하기
+DELETE http://localhost/board/delete/6a9507b9928e05197339bcff
+Content-Type: application/json
+Authorization: {{authToken}}
+
+### 회원가입
+POST http://localhost/user/join
+Content-Type: application/json
+
+{
+  "id": "user_1",
+  "password": "password",
+  "name": "user1"
+}
+
+### 로그인
+POST http://localhost/user/login
+Content-Type: application/json
+
+{
+  "id": "user_1",
+  "password": "password"
+}
+
+> {%
+    // 응답 데이터에서 토큰을 추출해 전역 변수로 저장
+    client.global.set("authToken", response.body.token);
+%}
+###
+
+
