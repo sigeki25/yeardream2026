@@ -15,6 +15,10 @@ let schema = new mongoose.Schema({
         required: [true, "본문 작성 필요"],
         maxLength: [200, "본문은 200자 이하이어야 합니다."],
     },
+    views: {
+        type: Number,
+        default: 0
+    },
     deleted: {
         type: Boolean,
         default: false

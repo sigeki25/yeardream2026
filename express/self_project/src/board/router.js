@@ -48,19 +48,19 @@ router.get("/detail/:_id", async (req, res, next) => {
         console.log(`입력 자릿수 다름 /detail/${_id}`);
         return res.json({"success": false, "msg": "작성된 글이 없습니다."});
     }
-    const board = await Board.findOne({_id}).lean();
+    const board = await Board.findOneAndUpdate({
+            _id,
+            deleted: false,
+            $or: [
+                {view_login_only: req.userData.login},
+                {view_login_only: false}
+            ]
+        },
+        {$inc: {views: 1}},
+        {new: true, timestamps: false}
+    ).lean();
     if (board == null) {
-        console.log(`게시물이 없음 /detail/${_id}`);
-        return res.json({"success": false, "msg": "작성된 글이 없습니다."});
-    }
-    if (board.view_login_only) {
-        if (!req.userData.login) {
-            console.log(`권한없는 접근 /detail/${_id}`);
-            return res.json({"success": false, "msg": "작성된 글이 없습니다."});
-        }
-    }
-    if (board.deleted) {
-        console.log(`삭제된 게시물 /detail/${_id}`);
+        console.log(`게시물이 없거나 권한이 없거나 삭제됨 /detail/${_id}`);
         return res.json({"success": false, "msg": "작성된 글이 없습니다."});
     }
     return res.json({"success": true, "data": board});

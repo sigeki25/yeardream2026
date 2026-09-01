@@ -12,8 +12,11 @@ GET http://localhost/board/detail/6a94e930a74c9452362301d1
 ### 상세보기(로그인 하지 않은 상태로 로그인 해야 볼수 있는 개시물 보기)
 GET http://localhost/board/detail/6a94e968a74c9452362301d3
 
-### 상세보기(로그인 한 상태)
+### 상세보기(삭제된 개시물 보기)
 GET http://localhost/board/detail/6a9507b9928e05197339bcff
+
+### 상세보기(로그인 한 상태)
+GET http://localhost/board/detail/6a94e968a74c9452362301d3
 Authorization: {{authToken}}
 
 ### 글쓰기
