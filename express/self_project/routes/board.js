@@ -1,11 +1,11 @@
 const express = require("express");
-const router = express.Router();
-const Board = require("./model");
+const board = express.Router();
+const Board = require("../model/board");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const VIEW_LIMIT = 10;
 
-router.get(["/list", "/list/:loc"], async (req, res, next) => {
+board.get(["/list", "/list/:loc"], async (req, res, next) => {
     const loc = req.params.loc || "1";
     const offset = (loc - 1) * VIEW_LIMIT;
     const limit = VIEW_LIMIT;
@@ -21,7 +21,7 @@ router.get(["/list", "/list/:loc"], async (req, res, next) => {
     return res.json({"success": true, "data": result});
 });
 
-router.post("/new", async (req, res, next) => {
+board.post("/new", async (req, res, next) => {
     const body = req.body;
     const headers = req.headers;
     const token = headers.authorization;
@@ -42,7 +42,7 @@ router.post("/new", async (req, res, next) => {
     }
 });
 
-router.get("/detail/:_id", async (req, res, next) => {
+board.get("/detail/:_id", async (req, res, next) => {
     const {_id} = req.params;
     if (_id.length !== 24) {
         console.log(`입력 자릿수 다름 /detail/${_id}`);
@@ -66,7 +66,7 @@ router.get("/detail/:_id", async (req, res, next) => {
     return res.json({"success": true, "data": board});
 });
 
-router.delete("/delete/:_id", async (req, res, next) => {
+board.delete("/delete/:_id", async (req, res, next) => {
     if (!req.userData.login) {
         return res.json({"success": false, "msg": "로그인이 필요합니다."});
     }
@@ -96,4 +96,4 @@ router.delete("/delete/:_id", async (req, res, next) => {
     return res.json({"success": false, "msg": "삭제 권한이 없습니다."});
 });
 
-module.exports = router;
+module.exports = board;

@@ -1,9 +1,9 @@
 const express = require("express");
-const router = express.Router();
-const User = require("./model");
+const user = express.Router();
+const User = require("../model/user");
 const jwt = require("jsonwebtoken");
 
-router.post("/join", async (req, res, next) => {
+user.post("/join", async (req, res, next) => {
     const body = req.body;
     const {id, password, name} = req.body;
     try {
@@ -27,7 +27,7 @@ router.post("/join", async (req, res, next) => {
     }
 });
 
-router.post("/login", async (req, res, next) => {
+user.post("/login", async (req, res, next) => {
     const body = req.body;
     const {id, password} = req.body;
     const user = await User.findOne({id}).select('+password');
@@ -44,4 +44,4 @@ router.post("/login", async (req, res, next) => {
     return res.json({"success": true, "message": "로그인 성공", "token": token});
 });
 
-module.exports = router;
+module.exports = user;

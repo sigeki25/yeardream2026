@@ -3,16 +3,19 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const crypt = require("bcrypt");
 const cors = require("cors");
-const connectDB = require("./db");
+const path = require('path');
+const connectDB = require("./config/db");
 const crypto = require("crypto");
 
-app.use(cors());
 const KEY = crypto.randomBytes(64).toString("hex");
 console.log("sign key : " + KEY);
-app.set("KEY", KEY);
-app.use(express.json()); // BODY 로 보내는 JSON 형태로 받기
 
-connectDB();
+app.use(express.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: false }));
+app.set("KEY", KEY);
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 //로그 시작 부분
 app.use ((req, res, next) => {
@@ -43,7 +46,8 @@ app.use((req, res, next) => {
     next(); // 인자 없이 호출해야 정상적으로 다음 핸들러로 이동합니다.
 });
 
-app.use("/user", require("./src/user/router"));
-app.use("/board", require("./src/board/router"));
+app.use("/user", require("./routes/user"));
+app.use("/board", require("./routes/board"));
+connectDB();
 
 app.listen(80, () => console.log(("http:///localhost")));
