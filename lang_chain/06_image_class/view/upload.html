@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>이미지 분류</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h3>파일 업로드 후 이미지 분류 페이지</h3>
+    <form id="fileForm">
+        <input type="file" name="files" multiple="multiple"/>
+    </form>
+    <input type="button" onclick="vision()" value="확인"/>
+    <div id="result"></div>
+</body>
+<script>
+    // 파일 전송시 주의사항
+    // 1. POST 방식으로 보낼것
+    // 2. FormData  객체로 보낼것
+    // 3. 동기 방식일 경우 enctype=multipart/form-data 명시할것
+    let test;
+    const result = document.getElementById("result");
+    async function vision(){
+        console.log('click');
+        const form = new FormData(document.getElementById('fileForm'));
+        const {data} = await axios({
+            method: 'post',
+            url:'/upload',
+            data: form,
+            responseType: 'stream', // 스트림 타입 설정
+            adapter: 'fetch' // 브라우저 환경에서 fetch 어댑터 강제 사용 (중요!)
+        });
+        // alert(data.msg);
+        // location.href='/view/file_list.html';
+        const reader = data.getReader();
+        const decoder = new TextDecoder();
+        result.innerHTML = "";
+        let text = ""
+        let num = 1;
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done){
+                break;
+            }
+            const chunk = JSON.parse(decoder.decode(value, {stream:true}));
+            test = chunk;
+            console.log(chunk);
+            console.log(chunk["message"]);
+            console.log(chunk["0"]);
+            if (chunk["message"] === "success") {
+                // result.innerHTML += chunk["0"]["label"] + "\n"
+                result.innerHTML += "<hr>[" + num + "번째 이미지 결과] <br>";
+                for (let i = 0; i in chunk; i++) {
+                    result.innerHTML += " - label : " + chunk[i].label + "<br> -- score : " + (chunk[i].score * 100) + "%<br>";
+                }
+            }
+            else {
+                result.innerHTML += "<hr>[" + num + "번째 이미지 결과] <br>";
+                result.innerHTML += " - 분류 실패<br>";
+            }
+            num = num + 1;
+        }
+    }
+</script>
+</html>

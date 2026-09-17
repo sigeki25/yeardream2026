@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<form action="/calc" method="get" id="calcForm">
+    <input type="text" name="val1" value=""/>
+    <select name="oper">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+    </select>
+    <input type="text" name="val2" value=""/>
+    <input type="submit" value="전송" id="submit"/>
+</form>
+<div id="result"></div>
+</body>
+<script>
+    const result_box = document.getElementById("result");
+    const btn_submit = document.getElementById("submit");
+    const form = document.getElementById('calcForm');
+
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const url = form.action;
+        const method = form.method;
+        btn_submit.disabled = true;
+        result_box.innerHTML = "계산 중..."
+        const formData = new FormData(form);
+        const jsonFormData = Object.fromEntries(formData.entries());
+        console.log(jsonFormData);
+        try {
+            // const {data} = await axios({
+            //     method: method,
+            //     url: url,
+            //     data: { params: jsonFormData }
+            // });
+            const {data} = await axios.get(url, { params: jsonFormData });
+            console.log(data);
+            result_box.innerHTML = "계산 결과 : " + data;
+        } catch (e) {
+            console.error(e);
+            result_box.innerHTML = "계산 실패";
+        } finally {
+            btn_submit.disabled = false;
+        }
+    });
+</script>
+</html>

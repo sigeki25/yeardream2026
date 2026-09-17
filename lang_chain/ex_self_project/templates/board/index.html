@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/public/styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<a href="/board/write">글쓰기</a>
+<table id="board">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>이미지</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>조회수</th>
+        <th>작성일</th>
+    </tr>
+    </thead>
+    <tbody id="list">
+    </tbody>
+</table>
+</body>
+<script>
+    const listBody = document.getElementById("list");
+    async function loadpage(page) {
+        const {data} = await axios.get("/board/list", { params: {page:1} });
+        console.log("data : ", data);
+        if (data.list.length === 0)
+            listBody.innerHTML = "<tr><th colSpan=6>작성된 글이 없습니다.</th></tr>"
+        else {
+            listBody.innerHTML = data.list.map(item => `<tr id=${item.idx}>
+            <td>${item.idx}</td>
+            <td>
+                ${item.file === None ? `<Image src="/noimage.png" width=25 height=25 alt=${"이미지없음"}/>`
+                    : `<Image src="/image.png" width=25 height=25 alt=${"이미지있음"}/>`}
+            </td>
+            <td>
+                <Link href=${`board/detail/${item.idx}`}>${item.subject === "" ? "-제목 없음-" : item.subject}</Link>
+            </td>
+            <td>${item.user_name}</td>
+            <td>${item.bHit}</td>
+            <td>${item.created_at}</td>
+        </tr>`);
+        }
+
+    }
+    window.onload = function() {
+        loadpage(1);
+    }
+</script>
+</html>
