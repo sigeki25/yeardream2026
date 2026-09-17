@@ -41,7 +41,7 @@ user.post("/login", async (req, res, next) => {
     }
     const KEY = req.app.get("KEY");
     const token = jwt.sign({id, password}, KEY, {expiresIn: "30m"});
-    return res.json({"success": true, "message": "로그인 성공", "token": token});
+    return res.json({"success": true, "message": "로그인 성공", "token": token, "data" : {"id": user.id, "name": user.name}});
 });
 
 module.exports = user;
