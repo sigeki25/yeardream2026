@@ -1,0 +1,31 @@
+-- PK 를 삼기위해 보통은 UUID 처럼 랜덤하고 중복되지 않는 값을 사용한다.
+SELECT UUID(); -- MongoDB 의 _id
+
+-- 자동증가는 auto_increment 를 사용하기도 한다.
+-- auto_increment 는 키 설정이 되어 있어야만 한다.
+-- 테이블 생성시 만들기
+CREATE TABLE auto_inc(
+	no INT(10) PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(10) NOT NULL
+);
+DESC auto_inc;
+
+INSERT INTO auto_inc(name) VALUES
+	("kim"),
+	("lee"),
+	("park");
+
+SELECT * FROM auto_inc;
+
+CREATE TABLE test(
+	no INT(10),
+	name VARCHAR(10) NOT NULL
+);
+
+INSERT INTO test(no, name) VALUES(1, "name");
+SELECT * FROM test;
+
+-- 이미 생성된 테이블에 추가
+ALTER TABLE test MODIFY no INT(10) PRIMARY KEY AUTO_INCREMENT;
+INSERT INTO test(name) VALUES("name");
+SELECT * FROM test;
