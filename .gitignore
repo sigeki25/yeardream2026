@@ -4,3 +4,5 @@
 *.pt
 *.bin
 *.dump
+**/__pycache__/
+*.sqlite3
