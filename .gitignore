@@ -2,3 +2,5 @@
 **/node_modules/
 *.safetensors
 *.pt
+*.bin
+*.dump
