@@ -1,0 +1,21 @@
+# langchain
+langchain-core
+langchain-ollama
+
+# chroma
+chromadb
+langchain-chroma
+langchain-text-splitters
+
+# langgraph
+langgraph
+
+# PDF
+pypdf2
+tiktoken
+
+# tavily
+langchain-tavily
+
+# dot-env
+python-dotenv
