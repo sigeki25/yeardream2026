@@ -1,0 +1,12 @@
+# YOLO
+# GTX 1660 기준
+--extra-index-url https://download.pytorch.org/whl/cu130/
+torch==2.11.0+cu130
+torchvision==0.26.0+cu130
+ultralytics
+# image show
+matplotlib
+# drawing
+opencv-python
+
+tqdm
