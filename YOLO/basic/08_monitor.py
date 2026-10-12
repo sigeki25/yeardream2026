@@ -1,57 +1,58 @@
+# 카메라 또는 영상 에서 '사람' 이 탐지되면
+# 콘솔로 '사람 탐지' 라고 출력해 보기
+import datetime
+import os
+
 import cv2
 from ultralytics import YOLO
 
-# 카메라 또는 영상에서 '사람' 이 탐지되면
-# 콘솔로 '사람 탐지' 라고 출력해 보기
-
-model = YOLO("yolo26n.pt")
-print(f"open CV : {cv2.__version__}")
-cap = cv2.VideoCapture("data/sample.mp4")
+# 1. 카메라 연결
+cap = cv2.VideoCapture(0) # 'data/sample.mp4'
+# 2. 모델 준비
+model = YOLO('yolo26n.pt')
 
 if not cap.isOpened():
-    print("비디오에 이상이 있습니다.")
+    print('비디오에 문제가 있습니다.')
     exit()
 
-detected_person_id = []
+dir = "C:/capture"
+if not os.path.exists(dir):
+    print(f'{dir} 폴더가 없어서 생성')
+    os.makedirs(dir)
+
 while True:
-    success, frame = cap.read()
+    success,frame = cap.read() # 카메라에서 프레임을 읽어오기(성공여부,이미지프레임)
 
-    if not success:
-        print("프레임을 읽어올 수 없습니다.")
+    if not success: # 못 읽어올 경우 나간다.
         break
 
-    # print(f"success : {success}")
-    results = model.track(  # track : 연속성이 있음(이전 프레임 기억)
-        source=frame,
-        persist=True,  # 이전 프레임을 기억
-        conf=0.5,
-        imgsz=[480, 640],  # 해상도 조정(속도 향상)
-        classes=[0, 2],  # 0번 : 사람, 2번 : 자동차 로 이 2개만 인식하도록 설정
-        show=False,  # 자체 팝업으로 보여주기
-        verbose=False
+    # 3. 탐지
+    results = model.predict(
+        frame,
+        conf=0.5,   # 0.5 이상의 정확도만 탐지하여 표시
+        show=False, # 별도의 창으로 보여줄지 여부(우리는 openCV로 보여줄 예정이라 False)
+        verbose=False,  # 프레임 상세 로그
+        classes=[0]     # 탐지할 클래스(0: 사람) results[0].names
     )
+    # 4. 탐지시 출력
+    if len(results[0].boxes.xyxy.tolist()) >0:
+        # print('사람 탐지')
+        # 캡쳐
+        now = datetime.datetime.now()
+        ftime = now.strftime("%Y_%m_%d_%H%M%S")
 
-    # YOLO 가 탐지한 내용을 가져와서 그리기
-    yolo_frame = results[0].plot()
-    resize_frame = cv2.resize(yolo_frame, (480, 640))  # 창 크기 줄이기
-    cv2.imshow("YOLO 실시간 추적", resize_frame)
+        file_name = f"{dir}/{ftime}.jpg"
+        cv2.imwrite(file_name,frame)
+        print(f"{ftime}.jpg 가 저장됨")
 
-    # for r in results:
-    #     boxes = r.boxes
-    #     print(f"탐지 정보 : {boxes}")
-    #     print(f"cls : {boxes.cls.tolist()}")
-    #     print(f"id : {boxes.id.tolist()}")
-    if results[0].boxes.id is not None:
-        for cls, id in zip(results[0].boxes.cls.tolist(), results[0].boxes.id.tolist()):
-            if cls == 0.0 and id not in detected_person_id:
-                print(f"새로운 사람 탐지, id : {int(id)}")
-                detected_person_id.append(id)
+    # openCV 에 프레임 그리기
+    plot_frame = results[0].plot()
+    resize_frame = cv2.resize(plot_frame,(480,640))
+    cv2.imshow("monitoring...",resize_frame)
 
-    # input("next")
-
-    # q 카 누르면 종료
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+    if cv2.waitKey(1000) & 0xFF == ord("q"):   # 1/1000초 마다 q가 눌렸는지 확인
         break
+
 
 cap.release()
 cv2.destroyAllWindows()

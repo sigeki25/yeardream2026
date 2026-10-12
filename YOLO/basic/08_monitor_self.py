@@ -1,0 +1,68 @@
+import os
+
+import cv2
+from ultralytics import YOLO
+
+# 카메라 또는 영상에서 '사람' 이 탐지되면
+# 콘솔로 '사람 탐지' 라고 출력해 보기
+
+model = YOLO("yolo26n.pt")
+print(f"open CV : {cv2.__version__}")
+cap = cv2.VideoCapture("data/sample.mp4")
+
+if not cap.isOpened():
+    print("비디오에 이상이 있습니다.")
+    exit()
+
+dir = "./capture"
+if not os.path.exists(dir):
+    print(f'{dir} 폴더가 없어서 생성')
+    os.makedirs(dir)
+
+detected_person_id = []
+while True:
+    success, frame = cap.read()
+
+    if not success:
+        print("프레임을 읽어올 수 없습니다.")
+        break
+
+    frame_cnt = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+    # print(f"success : {success}")
+    results = model.track(  # track : 연속성이 있음(이전 프레임 기억)
+        source=frame,
+        persist=True,  # 이전 프레임을 기억
+        conf=0.5,
+        imgsz=[480, 640],  # 해상도 조정(속도 향상)
+        classes=[0, 2],  # 0번 : 사람, 2번 : 자동차 로 이 2개만 인식하도록 설정
+        show=False,  # 자체 팝업으로 보여주기
+        verbose=False
+    )
+
+    # YOLO 가 탐지한 내용을 가져와서 그리기
+    yolo_frame = results[0].plot()
+    resize_frame = cv2.resize(yolo_frame, (480, 640))  # 창 크기 줄이기
+    cv2.imshow("YOLO 실시간 추적", resize_frame)
+
+    # for r in results:
+    #     boxes = r.boxes
+    #     print(f"탐지 정보 : {boxes}")
+    #     print(f"cls : {boxes.cls.tolist()}")
+    #     print(f"id : {boxes.id.tolist()}")
+    if results[0].boxes.id is not None:
+        for cls, id in zip(results[0].boxes.cls.tolist(), results[0].boxes.id.tolist()):
+            if cls == 0.0 :
+                if id not in detected_person_id:
+                    print(f"새로운 사람 탐지, id : {int(id)}")
+                    detected_person_id.append(id)
+                file_name = f"{dir}/{"sample.mp4"}_frame_{frame_cnt}_{int(cls)}_{int(id)}.jpg"
+                cv2.imwrite(file_name, frame)
+
+    # input("next")
+
+    # q 카 누르면 종료
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
